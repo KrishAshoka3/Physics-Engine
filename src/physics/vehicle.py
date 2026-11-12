@@ -178,24 +178,27 @@ PRESETS: Mapping[str, VehicleConfig] = MappingProxyType({
         name="Two-Stage Sounding Rocket (Black Brant IX Class)", payload_mass_kg=650., fairing_mass_kg=40.,
         stages=(
             StageConfig("Terrier-class booster", 350., 760., 240., .035, mass_flow_kg_s=760./6.,
-                        coast_after_separation_s=6., reference_area_m2=.164, stack_length_m=13., stack_radius_m=.229),
+                        coast_after_separation_s=6., reference_area_m2=.164, stack_length_m=13., stack_radius_m=.229,
+                        thrust_offset_body_m=(-5.2, 0., 0.)),
             StageConfig("Black Brant-class sustainer", 500., 1008., 290., .035, mass_flow_kg_s=1008./27.5,
-                        reference_area_m2=.151, stack_length_m=8.7, stack_radius_m=.219)),
+                        reference_area_m2=.151, stack_length_m=8.7, stack_radius_m=.219, thrust_offset_body_m=(-3.48, 0., 0.))),
         description="Heavy-payload ~200 km sounding class. Upper dry mass includes ~226 kg assumed recovery/structure beyond motor; see model notes."),
     "Small-Lift Orbital Vehicle (Electron Class)": VehicleConfig(
         name="Small-Lift Orbital Vehicle (Electron Class)", payload_mass_kg=200., fairing_mass_kg=44., fairing_jettison_time_s=180.,
         stages=(
             StageConfig("Rutherford-class booster", 950., 9250., 311., .335, mass_flow_kg_s=224000./(311.*G0_M_S2),
-                        coast_after_separation_s=3., reference_area_m2=1.131, stack_length_m=18., stack_radius_m=.6),
+                        coast_after_separation_s=3., reference_area_m2=1.131, stack_length_m=18., stack_radius_m=.6,
+                        thrust_offset_body_m=(-7.2, 0., 0.)),
             StageConfig("Rutherford-vacuum-class upper stage", 250., 2300., 343., .65, mass_flow_kg_s=25800./(343.*G0_M_S2),
-                        reference_area_m2=1.131, stack_length_m=6., stack_radius_m=.6)),
+                        reference_area_m2=1.131, stack_length_m=6., stack_radius_m=.6, thrust_offset_body_m=(-2.4, 0., 0.))),
         description="~7.6 km/s LEO mission class; estimated mass allocation; kick stage and battery drops omitted."),
     "Medium-Lift Two-Stage Orbital (Falcon 9 Class)": VehicleConfig(
         name="Medium-Lift Two-Stage Orbital (Falcon 9 Class)", payload_mass_kg=15000., fairing_mass_kg=1900., fairing_jettison_time_s=180.,
         stages=(
             StageConfig("Merlin-class booster", 25600., 395700., 311., 6.91, mass_flow_kg_s=8310000./(311.*G0_M_S2),
-                        coast_after_separation_s=3., reference_area_m2=10.752, stack_length_m=70., stack_radius_m=1.85),
+                        coast_after_separation_s=3., reference_area_m2=10.752, stack_length_m=70., stack_radius_m=1.85,
+                        thrust_offset_body_m=(-28., 0., 0.)),
             StageConfig("Merlin-vacuum-class upper stage", 4000., 92670., 348., 5., mass_flow_kg_s=981000./(348.*G0_M_S2),
-                        reference_area_m2=10.752, stack_length_m=16., stack_radius_m=1.85)),
+                        reference_area_m2=10.752, stack_length_m=16., stack_radius_m=1.85, thrust_offset_body_m=(-6.4, 0., 0.))),
         description="Public thrust/size anchors; estimated expendable mass split and Isp, no recovery reserve or throttle schedule."),
 })

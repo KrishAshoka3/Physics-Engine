@@ -1,0 +1,133 @@
+{
+  "base_git_revision": "5a154813c2ad798204ce37ee7e842b86d1076191",
+  "working_tree_dirty": true,
+  "python": "3.12.14",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "cases": {
+    "wind_shear_PID": {
+      "runtime_s": 4.0957942999957595,
+      "function_evaluations": 6508,
+      "samples": 348,
+      "termination": "duration",
+      "event_times_s": {},
+      "insertion": [],
+      "orbital_plans": 0,
+      "feasible_plans": 0,
+      "max_gimbal_rad": 0.04444592937863303,
+      "max_gimbal_rate_rad_s": 0.34906585039886584,
+      "max_powered_attitude_error_after_20_s_rad": 0.0001682684419378229,
+      "final_attitude_error_rad": 0.00013004373065347727,
+      "max_quaternion_norm_error": 1.9984014443252818e-15
+    },
+    "wind_shear_LQR": {
+      "runtime_s": 2.578100600017933,
+      "function_evaluations": 6532,
+      "samples": 350,
+      "termination": "duration",
+      "event_times_s": {},
+      "insertion": [],
+      "orbital_plans": 0,
+      "feasible_plans": 0,
+      "max_gimbal_rad": 0.044248282718888976,
+      "max_gimbal_rate_rad_s": 0.34906585039886584,
+      "max_powered_attitude_error_after_20_s_rad": 2.5376471889195832e-05,
+      "final_attitude_error_rad": 2.5376471889195832e-05,
+      "max_quaternion_norm_error": 2.886579864025407e-15
+    },
+    "Small-Lift Orbital Vehicle (Electron Class)_3DoF": {
+      "runtime_s": 3.5986363999836612,
+      "function_evaluations": 4681,
+      "samples": 339,
+      "termination": "duration",
+      "event_times_s": {
+        "rail_release": 2.4705326868871764,
+        "MECO": 125.94321601562498,
+        "stage_1_separation": 125.94321601562498,
+        "SES-1": 128.94321601562498,
+        "fairing_jettison": 180.0,
+        "SECO": 410.61402174761423
+      },
+      "insertion": [
+        {
+          "time_s": 410.61402174761423,
+          "phase": "insertion",
+          "achieved": true,
+          "errors_m_m_s_m_s": [
+            -0.000925060361623764,
+            -0.0009029248487490075,
+            -4.5786691771354526e-07
+          ],
+          "cutoff_trigger": "guided_cutoff"
+        }
+      ],
+      "orbital_plans": 75,
+      "feasible_plans": 75
+    },
+    "Medium-Lift Two-Stage Orbital (Falcon 9 Class)_3DoF": {
+      "runtime_s": 3.7917675000207964,
+      "function_evaluations": 4869,
+      "samples": 356,
+      "termination": "duration",
+      "event_times_s": {
+        "rail_release": 2.579059015419141,
+        "MECO": 145.22657364079421,
+        "stage_1_separation": 145.22657364079421,
+        "SES-1": 148.22657364079421,
+        "fairing_jettison": 180.0,
+        "SECO": 439.4305355517243
+      },
+      "insertion": [
+        {
+          "time_s": 439.4305355517243,
+          "phase": "insertion",
+          "achieved": true,
+          "errors_m_m_s_m_s": [
+            -0.001018000766634941,
+            -0.0005620162222114474,
+            -9.39098754315637e-07
+          ],
+          "cutoff_trigger": "guided_cutoff"
+        }
+      ],
+      "orbital_plans": 77,
+      "feasible_plans": 77
+    },
+    "Small-Lift Orbital Vehicle (Electron Class)_6DoF": {
+      "runtime_s": 32.414706100011244,
+      "function_evaluations": 76077,
+      "samples": 4301,
+      "termination": "duration",
+      "event_times_s": {
+        "rail_release": 2.4705326867405484,
+        "MECO": 125.94321601562478,
+        "stage_1_separation": 125.94321601562478,
+        "SES-1": 128.94321601562478,
+        "fairing_jettison": 180.0,
+        "SECO": 410.986452607706
+      },
+      "insertion": [
+        {
+          "time_s": 410.986452607706,
+          "phase": "insertion",
+          "achieved": true,
+          "errors_m_m_s_m_s": [
+            -0.20172259770333767,
+            -0.051136123549481625,
+            1.396962943545077e-06
+          ],
+          "cutoff_trigger": "guided_cutoff"
+        }
+      ],
+      "orbital_plans": 73,
+      "feasible_plans": 73,
+      "max_gimbal_rad": 0.06449384397779274,
+      "max_gimbal_rate_rad_s": 0.3490658503988662,
+      "max_powered_attitude_error_after_20_s_rad": 0.39422212667243156,
+      "final_attitude_error_rad": 0.01222619879783134,
+      "max_quaternion_norm_error": 7.771561172376096e-15
+    }
+  },
+  "wind_shear_PID_profile": "         6346713 function calls in 4.067 seconds\n\n   Ordered by: cumulative time\n   List reduced from 242 to 18 due to restriction <18>\n\n   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n        1    0.006    0.006    4.096    4.096 simulator.py:524(simulate)\n      250    0.006    0.000    3.662    0.015 ivp.py:160(solve_ivp)\n     6508    0.003    0.000    3.528    0.001 base.py:156(fun)\n     6508    0.004    0.000    3.525    0.001 base.py:23(fun_wrapped)\n     6508    0.006    0.000    3.520    0.001 simulator.py:638(<lambda>)\n     6508    0.089    0.000    3.514    0.001 simulator.py:365(rhs)\n     6856    0.189    0.000    3.119    0.000 simulator.py:299(loads)\n      365    0.000    0.000    3.017    0.008 base.py:179(step)\n      365    0.004    0.000    3.016    0.008 rk.py:111(_step_impl)\n      459    0.025    0.000    3.007    0.007 rk.py:14(rk_step)\n    36155    0.362    0.000    1.115    0.000 numeric.py:1563(cross)\n     6856    0.112    0.000    0.733    0.000 aerodynamics.py:148(aerodynamic_force)\n   108465    0.178    0.000    0.671    0.000 numeric.py:1489(moveaxis)\n     7455    0.154    0.000    0.546    0.000 atmosphere.py:115(atmosphere)\n   184354    0.154    0.000    0.418    0.000 fromnumeric.py:86(_wrapreduction_any_all)\n   216930    0.264    0.000    0.413    0.000 numeric.py:1427(normalize_axis_tuple)\n      250    0.000    0.000    0.412    0.002 base.py:212(dense_output)\n      250    0.007    0.000    0.412    0.002 rk.py:693(_dense_output_impl)\n\n\n"
+}

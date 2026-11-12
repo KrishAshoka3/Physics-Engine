@@ -4,12 +4,13 @@ Notes
 -----
 State columns are [position (3, m), velocity (3, m/s), total mass (kg), active
 stage propellant (kg)], followed in 6DoF by [q_wxyz (4, dimensionless), inertial
-body angular velocity (3, rad/s)]. ENU position is relative to the launch site;
+body angular velocity (3, rad/s)]. Guided 6DoF appends actual pitch/yaw gimbal
+angles (2, rad), giving 17 columns. ENU position is relative to the launch site;
 ECI position is geocentric. See ``docs/physics_models.md`` for event semantics,
 open-system rotational assumptions, and diagnostic orbital-element conventions.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Callable, Literal
 
 import numpy as np
@@ -24,6 +25,7 @@ from .frames import (ecef_to_geodetic, enu_basis, geodetic_to_ecef, gravity_acce
                      quaternion_derivative, quaternion_matrix, rotation_z)
 from .propulsion import propulsion
 from .vehicle import VehicleConfig
+from .flight import FlightCommand, FlightProgram, FlightSession, NavigationState, gimbal_direction
 
 FloatArray = NDArray[np.float64]
 DirectionFunction = Callable[[float, FloatArray], FloatArray]
@@ -35,7 +37,7 @@ class ControlInput:
 
     Notes
     -----
-    No autopilot is supplied in Phase 1. Body +x is the nominal thrust/nose axis.
+    Legacy pure control callback input. Body +x is the nominal thrust/nose axis.
     """
 
     thrust_direction_body: tuple[float, float, float] = (1., 0., 0.)
@@ -173,6 +175,9 @@ class SimulationResult:
         ``ground_impact`` or ``duration`` (not a physical quantity).
     function_evaluations : int
         Solver RHS call count (dimensionless).
+    guidance_records : tuple of dict
+        Accepted guidance/control updates, planner feasibility, and actual
+        insertion errors with units in keys; empty without a flight program.
     """
 
     time_s: FloatArray
@@ -184,6 +189,7 @@ class SimulationResult:
     config: SimulationConfig
     termination: str
     function_evaluations: int
+    guidance_records: tuple[dict[str, object], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -242,6 +248,36 @@ class _Dynamics:
         self.origin_m: FloatArray = geodetic_to_ecef(config.latitude_rad, config.longitude_rad, config.launch_altitude_m)
         self.basis: FloatArray = enu_basis(config.latitude_rad, config.longitude_rad)
         self.omega_rad_s: FloatArray = np.array([0., 0., EARTH_OMEGA_RAD_S if config.rotating_earth else 0.])
+        self.flight_session: FlightSession | None = None
+        self.flight_command: FlightCommand | None = None
+        self.rail_attached: bool = False
+        self.rail_axis_ecef: FloatArray = np.zeros(3)
+
+    def navigation(self, time_s: float, state: FloatArray, mode: _Mode) -> NavigationState:
+        """Build a truth-navigation sample in ECI with physical fields in SI units."""
+        position_m, velocity_m_s, frame_to_ecef = self.coordinates(time_s, state)
+        ecef_to_eci = rotation_z(self.omega_rad_s[2]*time_s)
+        latitude_rad, longitude_rad, altitude_m = ecef_to_geodetic(position_m)
+        local_basis = enu_basis(float(latitude_rad), float(longitude_rad))
+        wind_m_s = local_basis @ self.config.wind.velocity(float(altitude_m))
+        stage = self.vehicle.stages[mode.stage_index]
+        pressure_pa = float(atmosphere(float(altitude_m)).pressure_pa) if self.config.atmosphere_enabled else 0.
+        engine = propulsion(stage, time_s-mode.ignition_s, pressure_pa, engine_on=mode.phase == "powered")
+        return NavigationState(time_s, ecef_to_eci @ position_m,
+                               ecef_to_eci @ (velocity_m_s+np.cross(self.omega_rad_s, position_m)),
+                               ecef_to_eci @ (velocity_m_s-wind_m_s), ecef_to_eci @ local_basis,
+                               ecef_to_eci @ self.basis,
+                               ecef_to_eci @ frame_to_ecef @ quaternion_matrix(state[8:12]) if self.config.dof == 6 else np.eye(3),
+                               state[12:15].copy() if self.config.dof == 6 else np.zeros(3),
+                               state[15:17].copy() if len(state) == 17 else np.zeros(2),
+                               float(state[6]), float(state[7]), float(altitude_m), float(engine.thrust_n),
+                               float(engine.mass_flow_kg_s), state[6]*np.asarray(stage.principal_inertia_per_mass_m2),
+                               mode.stage_index, time_s-mode.ignition_s, mode.phase == "powered", self.rail_attached, self.config.mu_m3_s2)
+
+    def rail_distance_m(self, time_s: float, state: FloatArray) -> float:
+        """Return along-rail distance [m] in the Earth-fixed launch geometry."""
+        position_m, _, _ = self.coordinates(time_s, state)
+        return float(np.dot(position_m-self.origin_m, self.rail_axis_ecef))
 
     def coordinates(self, time_s: float, state: FloatArray) -> tuple[FloatArray, FloatArray, FloatArray]:
         """Return Earth-fixed position [m], relative velocity [m/s], frame-to-ECEF basis."""
@@ -272,6 +308,9 @@ class _Dynamics:
         else:
             axis = (frame_to_ecef.T @ local_basis[:, 2] if self.direction is None
                     else np.asarray(self.direction(time_s, state.copy()), dtype=float))
+            if self.flight_command is not None:
+                command_eci = self.flight_command.direction_eci(self.navigation(time_s, state, mode))
+                axis = frame_to_ecef.T @ rotation_z(-self.omega_rad_s[2]*time_s) @ command_eci
             if axis.shape != (3,) or not np.all(np.isfinite(axis)) or not np.isclose(np.linalg.norm(axis), 1., atol=1e-8):
                 raise ValueError("3DoF direction callback must return a finite unit vector in the propagation frame")
             body_to_frame = np.eye(3)  # unused rotation in 3DoF
@@ -287,7 +326,9 @@ class _Dynamics:
         control = _DEFAULT_CONTROL if self.control is None else self.control(time_s, state.copy())
         if not isinstance(control, ControlInput):
             raise TypeError("6DoF control callback must return ControlInput")
-        thrust_axis = axis if self.config.dof == 3 else body_to_frame @ np.asarray(control.thrust_direction_body)
+        thrust_direction_body = (gimbal_direction(state[15:17]) if self.flight_session is not None and self.config.dof == 6
+                                 else np.asarray(control.thrust_direction_body))
+        thrust_axis = axis if self.config.dof == 3 else body_to_frame @ thrust_direction_body
         force_n = thrust_n * thrust_axis + aero_n
         gravity_ecef_m_s2 = gravity_acceleration(position_m, mu_m3_s2=self.config.mu_m3_s2,
                                                 j2=EARTH_J2 if self.config.j2_enabled else 0.)
@@ -297,11 +338,21 @@ class _Dynamics:
             acceleration_m_s2 += frame_to_ecef.T @ (
                 -2. * np.cross(self.omega_rad_s, velocity_m_s)
                 - np.cross(self.omega_rad_s, np.cross(self.omega_rad_s, position_m)))
+        if self.rail_attached:
+            rotation_terms_m_s2 = (2.*np.cross(self.omega_rad_s, velocity_m_s)
+                                    + np.cross(self.omega_rad_s, np.cross(self.omega_rad_s, position_m)))
+            rotating_acceleration_m_s2 = frame_to_ecef @ acceleration_m_s2
+            if self.config.frame == "ECI":
+                rotating_acceleration_m_s2 -= rotation_terms_m_s2
+            constrained_m_s2 = self.rail_axis_ecef*np.dot(self.rail_axis_ecef, rotating_acceleration_m_s2)
+            if self.config.frame == "ECI":
+                constrained_m_s2 += rotation_terms_m_s2
+            acceleration_m_s2 = frame_to_ecef.T @ constrained_m_s2
         torque_n_m = np.zeros(3)
         if self.config.dof == 6:
             torque_n_m = (np.asarray(control.torque_body_n_m)
                           + np.cross(stage.cp_offset_body_m, body_to_frame.T @ aero_n)
-                          + np.cross(stage.thrust_offset_body_m, thrust_n * np.asarray(control.thrust_direction_body))
+                          + np.cross(stage.thrust_offset_body_m, thrust_n * thrust_direction_body)
                           - stage.angular_damping_n_m_s * state[12:15])
         frame_rate_rad_s = (body_to_frame.T @ frame_to_ecef.T @ self.omega_rad_s
                             if self.config.frame == "ENU" else np.zeros(3))
@@ -325,6 +376,14 @@ class _Dynamics:
             inertia_rate_kg_m2_s = -loads.mass_flow_kg_s * inertia_per_mass_m2
             derivative[12:15] = (loads.torque_body_n_m - np.cross(rate_rad_s, inertia_kg_m2 * rate_rad_s)
                                  - inertia_rate_kg_m2_s * rate_rad_s) / inertia_kg_m2
+            if self.rail_attached:
+                _, _, frame_to_ecef = self.coordinates(time_s, state)
+                rail_rate_body_rad_s = loads.body_to_frame.T @ frame_to_ecef.T @ self.omega_rad_s
+                derivative[8:12] = quaternion_derivative(state[8:12], rail_rate_body_rad_s-loads.frame_rate_body_rad_s)
+                derivative[12:15] = 0.
+            if self.flight_session is not None and self.flight_command is not None:
+                derivative[15:17] = np.clip((self.flight_command.gimbal_target_rad-state[15:17])/self.flight_session.actuator_time_constant_s,
+                                            -self.flight_session.actuator_rate_limit_rad_s, self.flight_session.actuator_rate_limit_rad_s)
         return derivative
 
 
@@ -419,12 +478,18 @@ def _events(dynamics: _Dynamics, mode: _Mode, fairing_attached: bool) -> list[_T
     if mode.phase == "powered":
         events.extend([_TerminalEvent("propellant_depletion", lambda time_s, state: float(state[7]), -1.),
                        _TerminalEvent("scheduled_cutoff", lambda time_s, state: time_s - (mode.ignition_s + stage.nominal_cutoff_s))])
+        if dynamics.flight_command is not None and np.isfinite(dynamics.flight_command.cutoff_time_s):
+            events.append(_TerminalEvent("guided_cutoff", lambda time_s, state: time_s-dynamics.flight_command.cutoff_time_s))
     elif mode.phase in ("await_separation", "await_ignition"):
         events.append(_TerminalEvent(mode.phase, lambda time_s, state: time_s - mode.next_time_s))
     if fairing_attached and vehicle.fairing_jettison_time_s is not None:
         events.append(_TerminalEvent("fairing_jettison", lambda time_s, state: time_s - vehicle.fairing_jettison_time_s))
     elif fairing_attached and vehicle.fairing_jettison_altitude_m is not None:
         events.append(_TerminalEvent("fairing_jettison", lambda time_s, state: dynamics.altitude_m(time_s, state) - vehicle.fairing_jettison_altitude_m))
+    if dynamics.rail_attached and dynamics.flight_session is not None:
+        events.append(_TerminalEvent("rail_release", lambda time_s, state: dynamics.rail_distance_m(time_s, state)-dynamics.flight_session.rail_length_m))
+    if dynamics.flight_command is not None and np.isfinite(dynamics.flight_command.next_update_s):
+        events.append(_TerminalEvent("flight_update", lambda time_s, state: time_s-dynamics.flight_command.next_update_s))
     return events
 
 
@@ -434,7 +499,7 @@ def _transition(trigger: str, time_s: float, state: FloatArray, mode: _Mode,
     state = state.copy()
     stage = vehicle.stages[mode.stage_index]
     name = trigger
-    if trigger in ("propellant_depletion", "scheduled_cutoff"):
+    if trigger in ("propellant_depletion", "scheduled_cutoff", "guided_cutoff"):
         name = "MECO" if mode.stage_index == 0 else ("SECO" if mode.stage_index == 1 else f"stage_{mode.stage_index + 1}_cutoff")
         if trigger == "propellant_depletion":
             state[6] -= state[7]  # remove only root-roundoff residue, not step-based clipping
@@ -458,7 +523,7 @@ def _transition(trigger: str, time_s: float, state: FloatArray, mode: _Mode,
 
 def simulate(vehicle: VehicleConfig, config: SimulationConfig = SimulationConfig(), *,
              state0: ArrayLike | None = None, thrust_direction: DirectionFunction | None = None,
-             control: ControlFunction | None = None) -> SimulationResult:
+             control: ControlFunction | None = None, guidance: FlightProgram | None = None) -> SimulationResult:
     """Propagate one vehicle with terminal-event stitching and derived telemetry.
 
     Parameters
@@ -474,6 +539,11 @@ def simulate(vehicle: VehicleConfig, config: SimulationConfig = SimulationConfig
     control : callable or None
         6DoF-only ``(time_s, state) -> ControlInput``. Default is axial thrust,
         zero applied control torque. Callbacks must be pure and deterministic.
+    guidance : FlightProgram or None
+        Reusable sampled flight-computer factory. With dof=3, track its pure
+        direction law ideally. With dof=6, append actual pitch/yaw gimbal angles
+        [rad] as state columns 15:17 and integrate physical TVC servo dynamics.
+        Cannot be combined with legacy direction/control callbacks.
 
     Returns
     -------
@@ -497,9 +567,23 @@ def simulate(vehicle: VehicleConfig, config: SimulationConfig = SimulationConfig
     """
     if (config.dof == 3 and control is not None) or (config.dof == 6 and thrust_direction is not None):
         raise ValueError("Use thrust_direction for 3DoF and control for 6DoF")
+    if guidance is not None and (control is not None or thrust_direction is not None):
+        raise ValueError("Guidance owns direction/control; do not also supply legacy callbacks")
     dynamics = _Dynamics(vehicle, config, thrust_direction, control)
+    if guidance is not None:
+        dynamics.flight_session = guidance.create_session(vehicle, config.dof)
+        dynamics.rail_attached = dynamics.flight_session.rail_length_m > 0.
+        dynamics.rail_axis_ecef = dynamics.basis @ dynamics.flight_session.rail_axis_enu
     state = initial_state(vehicle, config) if state0 is None else np.asarray(state0, dtype=float).copy()
-    if state.shape != (8 if config.dof == 3 else 15,) or not np.all(np.isfinite(state)):
+    if dynamics.rail_attached and config.dof == 6 and state0 is None:
+        rail = dynamics.flight_session.rail_axis_enu
+        state = initial_state(vehicle, replace(config, initial_azimuth_rad=float(np.arctan2(rail[0], rail[1])),
+                                               initial_elevation_rad=float(np.arcsin(rail[2]))))
+        frame_to_ecef = np.eye(3) if config.frame == "ECI" else dynamics.basis
+        state[12:15] = quaternion_matrix(state[8:12]).T @ frame_to_ecef.T @ dynamics.omega_rad_s
+    if guidance is not None and config.dof == 6 and state.shape == (15,):
+        state = np.concatenate((state, np.zeros(2)))
+    if state.shape != (8 if config.dof == 3 else 17 if guidance is not None else 15,) or not np.all(np.isfinite(state)):
         raise ValueError("Initial state has wrong shape or nonfinite values")
     if not np.allclose(state[6:8], [vehicle.initial_mass_kg, vehicle.stages[0].propellant_mass_kg], rtol=0., atol=config.mass_atol_kg):
         raise ValueError("Initial total mass and active fuel must match the fully fueled vehicle")
@@ -507,19 +591,34 @@ def simulate(vehicle: VehicleConfig, config: SimulationConfig = SimulationConfig
         raise ValueError("Initial state is below the configured impact surface")
     if config.dof == 6 and not np.isclose(np.linalg.norm(state[8:12]), 1., atol=1e-10):
         raise ValueError("Initial quaternion must have unit norm")
+    if dynamics.flight_session is not None and config.dof == 6 and np.any(np.abs(state[15:17]) > dynamics.flight_session.actuator_angle_limit_rad):
+        raise ValueError("Initial gimbal angles exceed mechanical bounds")
+    if dynamics.rail_attached:
+        position_m, velocity_m_s, frame_to_ecef = dynamics.coordinates(0., state)
+        lateral_m_s = velocity_m_s-dynamics.rail_axis_ecef*np.dot(velocity_m_s, dynamics.rail_axis_ecef)
+        if np.linalg.norm(position_m-dynamics.origin_m) > 1e-6 or np.linalg.norm(lateral_m_s) > 1e-6:
+            raise ValueError("Rail launch must start at the launch origin with along-rail velocity")
+        if config.dof == 6:
+            rotation = frame_to_ecef @ quaternion_matrix(state[8:12])
+            if np.linalg.norm(rotation[:, 0]-dynamics.rail_axis_ecef) > 1e-6 or np.linalg.norm(state[12:15]-rotation.T @ dynamics.omega_rad_s) > 1e-6:
+                raise ValueError("Initial attitude and body rate must match the Earth-fixed rail")
     if vehicle.fairing_jettison_altitude_m is not None and dynamics.altitude_m(0., state) > vehicle.fairing_jettison_altitude_m + 1e-7:
         raise ValueError("Initial state is already above the fairing trigger; use time=0 instead")
     mode = _Mode("powered" if config.engines_enabled else "coast")
+    if dynamics.flight_session is not None:
+        dynamics.flight_command = dynamics.flight_session.update(dynamics.navigation(0., state, mode))
     fairing_attached = vehicle.fairing_mass_kg > 0.
     time_s = 0.
     times_s: list[float] = [0.]
     states: list[FloatArray] = [state.copy()]
     modes: list[_Mode] = [mode]
+    commands: list[FlightCommand | None] = [dynamics.flight_command]
     records: list[EventRecord] = []
     function_evaluations = 0
     termination = "duration"
     atol = np.array([config.position_atol_m] * 3 + [config.velocity_atol_m_s] * 3 + [config.mass_atol_kg] * 2
-                    + ([config.quaternion_atol] * 4 + [config.rate_atol_rad_s] * 3 if config.dof == 6 else []))
+                    + ([config.quaternion_atol] * 4 + [config.rate_atol_rad_s] * 3 if config.dof == 6 else [])
+                    + ([1e-9]*2 if guidance is not None and config.dof == 6 else []))
     while time_s < config.duration_s:
         events = _events(dynamics, mode, fairing_attached)
         # Bound trial evaluations by known clock events; the terminal residuals
@@ -531,21 +630,35 @@ def simulate(vehicle: VehicleConfig, config: SimulationConfig = SimulationConfig
             clock_times_s.append(mode.next_time_s)
         if fairing_attached and vehicle.fairing_jettison_time_s is not None:
             clock_times_s.append(vehicle.fairing_jettison_time_s)
+        if dynamics.flight_command is not None:
+            clock_times_s.append(dynamics.flight_command.next_update_s)
+            if mode.phase == "powered":
+                clock_times_s.append(dynamics.flight_command.cutoff_time_s)
         segment_end_s = min(epoch_s for epoch_s in clock_times_s if epoch_s > time_s)
         solution = solve_ivp(lambda epoch_s, values: dynamics.rhs(epoch_s, values, mode),
                              (time_s, segment_end_s), state, method=config.method,
                              rtol=config.rtol, atol=atol, max_step=config.max_step_s,
-                             first_step=min(.01, config.max_step_s, segment_end_s - time_s), events=events)
+                             first_step=min(.1 if guidance is not None and time_s > 0. else .01,
+                                            config.max_step_s, segment_end_s - time_s), events=events)
         function_evaluations += solution.nfev
         if not solution.success:
             raise RuntimeError(f"Integration failed at {solution.t[-1]} s: {solution.message}")
         # Replace the shared endpoint so state and telemetry use the post-event mode.
         states[-1], modes[-1] = state.copy(), mode
+        commands[-1] = dynamics.flight_command
         for index in range(1, len(solution.t)):
-            if solution.t[index] > times_s[-1]:
+            time_resolution_s = 32.*np.finfo(float).eps*max(1., abs(float(solution.t[index])))
+            if solution.t[index]-times_s[-1] > time_resolution_s:
                 times_s.append(float(solution.t[index]))
                 states.append(solution.y[:, index].copy())
                 modes.append(mode)
+                commands.append(dynamics.flight_command)
+            elif solution.t[index] >= times_s[-1]:
+                # Coalesce roundoff-separated event endpoints, retaining the
+                # right-hand sample. The event ledger still retains exact roots.
+                times_s[-1] = float(solution.t[index])
+                states[-1], modes[-1] = solution.y[:, index].copy(), mode
+                commands[-1] = dynamics.flight_command
         time_s, state = float(solution.t[-1]), solution.y[:, -1].copy()
         triggered = [index for index, roots_s in enumerate(solution.t_events) if len(roots_s)]
         if not triggered:
@@ -553,23 +666,42 @@ def simulate(vehicle: VehicleConfig, config: SimulationConfig = SimulationConfig
         trigger = events[triggered[0]].name
         before, previous_stage = state.copy(), mode.stage_index
         name, state, mode, fairing_attached = _transition(trigger, time_s, state, mode, vehicle, fairing_attached)
-        records.append(EventRecord(name, trigger, time_s, previous_stage, before, state.copy()))
+        if trigger != "flight_update":
+            records.append(EventRecord(name, trigger, time_s, previous_stage, before, state.copy()))
         states[-1], modes[-1] = state.copy(), mode
         if trigger == "ground_impact":
             termination = "ground_impact"
             break
-        if len(records) > 4 * len(vehicle.stages) + 4:
+        if trigger == "rail_release":
+            dynamics.rail_attached = False
+        if dynamics.flight_session is not None:
+            dynamics.flight_command = dynamics.flight_session.update(dynamics.navigation(time_s, state, mode), trigger)
+            commands[-1] = dynamics.flight_command
+        if len(records) > 4 * len(vehicle.stages) + 8:
             raise RuntimeError("Unexpected repeated terminal event; refusing a zero-time restart loop")
     time_array_s, state_array = np.array(times_s), np.stack(states)
-    telemetry = _telemetry(dynamics, time_array_s, state_array, modes)
+    telemetry = _telemetry(dynamics, time_array_s, state_array, modes, commands)
     return SimulationResult(time_array_s, state_array, np.array([item.stage_index for item in modes], dtype=np.int64),
                             np.array([item.phase == "powered" for item in modes], dtype=bool), tuple(records),
-                            telemetry, config, termination, function_evaluations)
+                            telemetry, config, termination, function_evaluations,
+                            tuple(dynamics.flight_session.records) if dynamics.flight_session is not None else ())
 
 
-def _telemetry(dynamics: _Dynamics, times_s: FloatArray, states: FloatArray, modes: list[_Mode]) -> dict[str, FloatArray]:
+def _telemetry(dynamics: _Dynamics, times_s: FloatArray, states: FloatArray, modes: list[_Mode],
+               commands: list[FlightCommand | None]) -> dict[str, FloatArray]:
     """Build force diagnostics and vectorized inertial orbital telemetry with SI keys."""
-    rows = [dynamics.loads(float(time_s), state, mode) for time_s, state, mode in zip(times_s, states, modes)]
+    rows: list[_Loads] = []
+    commanded_axes: list[FloatArray] = []
+    attitude_errors_rad: list[float] = []
+    for time_s, state, mode, command in zip(times_s, states, modes, commands):
+        dynamics.flight_command = command
+        dynamics.rail_attached = command.rail_attached if command is not None else False
+        rows.append(dynamics.loads(float(time_s), state, mode))
+        if command is not None:
+            navigation = dynamics.navigation(float(time_s), state, mode)
+            commanded_axis = command.direction_eci(navigation)
+            commanded_axes.append(commanded_axis)
+            attitude_errors_rad.append(float(np.arccos(np.clip(np.dot(navigation.body_to_eci[:, 0], commanded_axis), -1., 1.))) if dynamics.config.dof == 6 else 0.)
     names = ("altitude_m", "relative_speed_m_s", "mach", "q_pa", "alpha_rad", "thrust_n", "axial_g", "twr")
     telemetry = {name: np.array([getattr(row, name) for row in rows]) for name in names}
     if dynamics.config.frame == "ECI":
@@ -588,4 +720,11 @@ def _telemetry(dynamics: _Dynamics, times_s: FloatArray, states: FloatArray, mod
     telemetry["mass_kg"], telemetry["propellant_kg"] = states[:, 6], states[:, 7]
     if dynamics.config.dof == 6:
         telemetry["quaternion_norm"] = np.linalg.norm(states[:, 8:12], axis=1)
+    if commanded_axes:
+        telemetry["command_axis_eci"] = np.stack(commanded_axes)
+        telemetry["attitude_error_rad"] = np.array(attitude_errors_rad)
+        telemetry["rail_attached"] = np.array([command.rail_attached for command in commands], dtype=float)
+        if dynamics.config.dof == 6:
+            telemetry["gimbal_rad"] = states[:, 15:17]
+            telemetry["gimbal_target_rad"] = np.stack([command.gimbal_target_rad for command in commands])
     return telemetry

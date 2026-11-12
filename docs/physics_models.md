@@ -1,6 +1,6 @@
 # Phase 1 core physics: conventions, models, and limits
 
-This implementation supplies reusable numerical kernels and a hybrid event-driven propagator. It is analytically verified within the cases in `tests/`; it is not a flight-qualified or empirically validated vehicle model. Guidance and an autopilot remain Phase 2 work.
+This implementation supplies reusable numerical kernels and a hybrid event-driven propagator. It is analytically verified within the cases in `tests/`; it is not a flight-qualified or empirically validated vehicle model. Phase 2 guidance and TVC are available through the optional `guidance` argument; see [guidance models and usage](guidance_models.md) for the 17-state guided 6DoF schema and provisional preset nozzle offsets.
 
 ## Usage
 

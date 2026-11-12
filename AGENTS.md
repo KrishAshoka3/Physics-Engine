@@ -1,6 +1,6 @@
 # Repository engineering rules
 
-These rules apply to all work in this repository. Phase 1 core physics was explicitly authorized and is implemented; see `docs/phase1_audit.md`. Do not advance into a later roadmap phase without authorization. Preserve the documented distinction between analytical verification and empirical validation.
+These rules apply to all work in this repository. Phases 1 and 2 were explicitly authorized and are implemented; see `docs/phase1_audit.md` and `docs/phase2_audit.md`. Do not advance into a later roadmap phase without authorization. Preserve the documented distinction between analytical verification and empirical validation.
 
 ## Architecture
 

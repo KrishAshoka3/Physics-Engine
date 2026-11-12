@@ -1,6 +1,6 @@
 # Aerospace Trajectory, Guidance & Mission Analysis Suite
 
-Phase 1 core modules are implemented and analytically verified; see `docs/phase1_audit.md` and `docs/physics_models.md` for evidence and model limits. Later phases remain unimplemented. Checkboxes indicate implementation within documented assumptions, not flight-data validation or research readiness. Execute only authorized phases and satisfy the `AGENTS.md` audit gate before proceeding.
+Phase 1 core modules are implemented and analytically verified; see `docs/phase1_audit.md` and `docs/physics_models.md` for evidence and model limits. Phase 2 guidance and TVC are implemented; see `docs/phase2_audit.md`. Phases 3–5 remain unimplemented. Checkboxes indicate implementation within documented assumptions, not flight-data validation or research readiness. Execute only authorized phases and satisfy the `AGENTS.md` audit gate before proceeding.
 
 ## Phase 1: High-Fidelity 3DoF/6DoF Physics & Environment
 
@@ -16,13 +16,13 @@ Phase 1 core modules are implemented and analytically verified; see `docs/phase1
 
 ## Phase 2: Guidance, Navigation & Control
 
-- [ ] Implement launch-rail constraints and release, pitch-kick, and zero-lift gravity-turn modes with explicit transition conditions.
-- [ ] Implement Powered Explicit Guidance and Linear Tangent Steering with documented assumptions, target constraints, and feasibility handling.
-- [ ] Define navigation truth/estimate interfaces, sensor assumptions, and update rates.
-- [ ] Implement quaternion attitude kinematics with declared ordering, rotation direction, normalization policy, and singularity-free attitude errors.
-- [ ] Implement PID and LQR thrust-vector-control autopilots with actuator limits, rate limits, anti-windup where applicable, and stability evidence.
-- [ ] Couple guidance/control to propagation with documented sample-and-hold timing and event consistency.
-- [ ] Audit: pytest guidance transitions, quaternion benchmarks, equilibrium/step responses, and closed-loop trajectory checks; re-run applicable Phase 1 benchmarks, profile/vectorize, document limitations, and commit a clean milestone.
+- [x] Implement launch-rail constraints and release, pitch-kick, and zero-lift gravity-turn modes with explicit transition conditions.
+- [x] Implement numerical Linear Tangent Steering inspired by powered explicit guidance with documented assumptions, target constraints, and feasibility handling.
+- [x] Define navigation truth/estimate interfaces, sensor assumptions, and update rates.
+- [x] Implement quaternion attitude kinematics with declared ordering, rotation direction, normalization policy, and singularity-free attitude errors.
+- [x] Implement PID and LQR thrust-vector-control autopilots with actuator limits, rate limits, anti-windup where applicable, and stability evidence.
+- [x] Couple guidance/control to propagation with documented sample-and-hold timing and event consistency.
+- [x] Audit: pytest guidance transitions, quaternion benchmarks, equilibrium/step responses, and closed-loop trajectory checks; re-run applicable Phase 1 benchmarks, profile/vectorize, document limitations, and commit a clean milestone.
 
 ## Phase 3: Parallelized Monte Carlo, Sensitivity & Optimization
 
