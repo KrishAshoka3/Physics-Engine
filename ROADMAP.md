@@ -1,6 +1,6 @@
 # Aerospace Trajectory, Guidance & Mission Analysis Suite
 
-Phase 1 core modules are implemented and analytically verified; see `docs/phase1_audit.md` and `docs/physics_models.md` for evidence and model limits. Phase 2 guidance and TVC are implemented; see `docs/phase2_audit.md`. Phases 3–5 remain unimplemented. Checkboxes indicate implementation within documented assumptions, not flight-data validation or research readiness. Execute only authorized phases and satisfy the `AGENTS.md` audit gate before proceeding.
+Phase 1 core modules are implemented and analytically verified; see `docs/phase1_audit.md` and `docs/physics_models.md` for evidence and model limits. Phase 2 guidance and TVC are implemented; see `docs/phase2_audit.md`. Phases 3-5 remain unimplemented. Checkboxes indicate implementation within documented assumptions, not flight-data validation or research readiness. Execute only authorized phases and satisfy the `AGENTS.md` audit gate before proceeding.
 
 ## Phase 1: High-Fidelity 3DoF/6DoF Physics & Environment
 
@@ -15,6 +15,8 @@ Phase 1 core modules are implemented and analytically verified; see `docs/phase1
 - [x] Audit: pytest coverage, Tsiolkovsky delta-V, US76 reference tables, gravity/frame checks, event accuracy, and tolerance convergence; profile/vectorize appropriate bottlenecks, document evidence, and commit a clean milestone.
 
 ## Phase 2: Guidance, Navigation & Control
+
+**Complete:** consolidated acceptance checks in `tests/test_guidance.py` cover integrated quaternion norm, signed gimbal travel stops, fixed-command settling through wind shear, and independently computed orbital insertion errors. See `docs/phase2_audit.md` for completion evidence.
 
 - [x] Implement launch-rail constraints and release, pitch-kick, and zero-lift gravity-turn modes with explicit transition conditions.
 - [x] Implement numerical Linear Tangent Steering inspired by powered explicit guidance with documented assumptions, target constraints, and feasibility handling.

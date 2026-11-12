@@ -6,6 +6,23 @@ flight-data validation. The milestone is the commit containing this report.
 
 ## Verification
 
+Completion follow-up: `tests/test_guidance.py` adds 14 acceptance cases, and
+the full suite passes **125 tests in 81.47 s**. DOP853 and RK45 quaternion
+propagation over 120 s match constant-axis analytical rotation and preserve
+unit norm within 1e-9. PID/LQR tests exercise both signed travel stops on both
+gimbal axes. A fixed five-degree attitude command step settles below one degree
+by 20 s while traversing three-axis wind shear; quaternion norm and actual
+gimbal bounds are checked throughout. Circular and elliptical 6DoF insertion
+checks independently derive radius, radial velocity and vis-viva speed from
+the cutoff state, with 100 m / 1 m/s limits.
+
+No production-code changes were needed. An initially incorrect pitch-sign
+expectation in the new saturation test was corrected from the documented aft
+nozzle cross-product convention; limits were unchanged. Compilation, dependency,
+annotation/docstring and diff checks pass. Existing profiling evidence below
+remains applicable because numerical implementation is unchanged; the new
+trajectory reductions use NumPy arrays. Phase 2 checkboxes remain complete.
+
 `python -m pytest -q`: **111 passed in 67.70 s**, including all 68 Phase 1
 cases. `python -m compileall -q src tests`, `python -m pip check`, an AST
 argument/return-annotation and docstring audit, and `git diff --check` passed.
