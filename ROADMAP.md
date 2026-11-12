@@ -4,6 +4,8 @@ Phase 1 core modules are implemented and analytically verified; see `docs/phase1
 
 ## Phase 1: High-Fidelity 3DoF/6DoF Physics & Environment
 
+**Complete:** consolidated acceptance suite in `tests/test_physics.py`; 68 tests pass across the full suite. Includes the requested `rtol=1e-6` versus `rtol=1e-9` comparison. Completion remains subject to the model limits documented in `docs/physics_models.md`.
+
 - [x] Define typed SI state/configuration interfaces, coordinate frames, time conventions, and 3DoF/6DoF model boundaries.
 - [x] Implement US Standard Atmosphere 1976 and a documented upper-atmosphere extension with validity ranges, source tables, and continuous transitions where physically appropriate.
 - [x] Implement WGS84 geometry and Earth constants, J2 gravity, and consistent rotating-frame Coriolis/centrifugal terms; verify against an inertial-frame formulation.

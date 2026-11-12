@@ -4,6 +4,10 @@ Audit date: 2026-11-12. This record covers the core modules requested for Phase 
 
 ## Commands and outcomes
 
+Follow-up completion audit: `tests/test_physics.py` adds 18 consolidated acceptance cases. The full suite now passes **68 tests** (4.96 s in the completion run). Both DOP853 and RK45 improve against analytical delta-V when changing `rtol` from 1e-6 to 1e-9. Mass budgets include dry mass, residual fuel, consumed exhaust, fairing, and retained payload/stage in both 3DoF and 6DoF. No implementation fixes were necessary. The original 50-case measurements below remain the initial implementation audit.
+
+Atmosphere acceptance uses fixed published reference values with explicit rounding tolerances, not bitwise equality: 0/11/20/47 km are geopotential layer heights; 86 km is geometric with the US76 molecular-weight correction. The 86 km check is identified as US76 rather than falsely attributed to an independently inspected ICAO table. Reference provenance is in the test module and model notes.
+
 Run from the repository root:
 
 ```powershell
