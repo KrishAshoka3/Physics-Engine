@@ -1,6 +1,6 @@
 # Repository engineering rules
 
-These rules apply to all work in this repository. The current milestone is architecture and planning only; do not implement physics until implementation is requested.
+These rules apply to all work in this repository. Phase 1 core physics was explicitly authorized and is implemented; see `docs/phase1_audit.md`. Do not advance into a later roadmap phase without authorization. Preserve the documented distinction between analytical verification and empirical validation.
 
 ## Architecture
 

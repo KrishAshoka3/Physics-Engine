@@ -1,0 +1,29 @@
+{
+  "python": "3.12.14",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "sounding_profiled_runtime_s": 1.4432720000040717,
+  "sounding_function_evaluations": 3548,
+  "sounding_samples": 264,
+  "sounding_sampled_apogee_m": 215799.50769909192,
+  "sounding_impact_time_s": 454.61240857799294,
+  "sounding_event_times_s": {
+    "MECO": 6.0,
+    "stage_1_separation": 6.0,
+    "SES-1": 12.0,
+    "SECO": 39.5,
+    "ground_impact": 454.61240857799294
+  },
+  "atmosphere_batch_10000_best_s": 0.0008225000055972487,
+  "atmosphere_scalar_loop_10000_s": 0.3840634999796748,
+  "atmosphere_batch_speedup": 466.9465013569108,
+  "atmosphere_batch_scalar_max_pressure_difference_pa": 1.4551915228366852e-11,
+  "tsiolkovsky_error_m_s": {
+    "DOP853": 5.497004167409614e-07,
+    "RK45": 2.6344932848587632e-06
+  },
+  "one_orbit_max_relative_energy_error": 1.9984014443252818e-15,
+  "one_orbit_position_closure_error_m": 3.026798367500305e-08,
+  "profile": "         2147630 function calls in 1.431 seconds\n\n   Ordered by: cumulative time\n   List reduced from 196 to 15 due to restriction <15>\n\n   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n        1    0.001    0.001    1.443    1.443 simulator.py:459(simulate)\n     3812    0.079    0.000    1.370    0.000 simulator.py:263(loads)\n        5    0.001    0.000    1.342    0.268 ivp.py:160(solve_ivp)\n      264    0.000    0.000    1.309    0.005 base.py:179(step)\n      264    0.002    0.000    1.309    0.005 rk.py:111(_step_impl)\n      294    0.014    0.000    1.304    0.004 rk.py:14(rk_step)\n     3548    0.002    0.000    1.297    0.000 base.py:156(fun)\n     3548    0.002    0.000    1.295    0.000 base.py:23(fun_wrapped)\n     3548    0.002    0.000    1.293    0.000 simulator.py:535(<lambda>)\n     3548    0.012    0.000    1.290    0.000 simulator.py:314(rhs)\n     3812    0.057    0.000    0.364    0.000 aerodynamics.py:148(aerodynamic_force)\n     3812    0.095    0.000    0.274    0.000 atmosphere.py:115(atmosphere)\n   103502    0.079    0.000    0.212    0.000 fromnumeric.py:86(_wrapreduction_any_all)\n     4090    0.017    0.000    0.162    0.000 simulator.py:246(coordinates)\n    53655    0.021    0.000    0.139    0.000 fromnumeric.py:2474(any)\n\n\n"
+}

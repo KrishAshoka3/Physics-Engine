@@ -1,16 +1,16 @@
 # Aerospace Trajectory, Guidance & Mission Analysis Suite
 
-Architecture is initialized; all development phases below remain unimplemented. This roadmap is a plan, not evidence of research readiness. Execute authorized phases in order and satisfy the `AGENTS.md` audit gate before proceeding.
+Phase 1 core modules are implemented and analytically verified; see `docs/phase1_audit.md` and `docs/physics_models.md` for evidence and model limits. Later phases remain unimplemented. Checkboxes indicate implementation within documented assumptions, not flight-data validation or research readiness. Execute only authorized phases and satisfy the `AGENTS.md` audit gate before proceeding.
 
 ## Phase 1: High-Fidelity 3DoF/6DoF Physics & Environment
 
-- [ ] Define typed SI state/configuration interfaces, coordinate frames, time conventions, and 3DoF/6DoF model boundaries.
-- [ ] Implement US Standard Atmosphere 1976 and a documented upper-atmosphere extension with validity ranges, source tables, and continuous transitions where physically appropriate.
-- [ ] Implement WGS84 geometry and Earth constants, J2 gravity, and consistent rotating-frame Coriolis/centrifugal terms; verify against an inertial-frame formulation.
-- [ ] Implement mass depletion, multistage properties, nozzle ambient-pressure compensation, and Mach/alpha aerodynamic drag curves with provenance and interpolation limits.
-- [ ] Implement translational and rigid-body rotational dynamics with documented force, moment, inertia, and center-of-mass conventions.
-- [ ] Build `solve_ivp` propagation with terminal events for engine cutoff, stage separation, and ground impact; apply transitions and restart without timestep-triggered approximations.
-- [ ] Audit: pytest coverage, Tsiolkovsky delta-V, US76 reference tables, gravity/frame checks, event accuracy, and tolerance convergence; profile/vectorize appropriate bottlenecks, document evidence, and commit a clean milestone.
+- [x] Define typed SI state/configuration interfaces, coordinate frames, time conventions, and 3DoF/6DoF model boundaries.
+- [x] Implement US Standard Atmosphere 1976 and a documented upper-atmosphere extension with validity ranges, source tables, and continuous transitions where physically appropriate.
+- [x] Implement WGS84 geometry and Earth constants, J2 gravity, and consistent rotating-frame Coriolis/centrifugal terms; verify against an inertial-frame formulation.
+- [x] Implement mass depletion, multistage properties, nozzle ambient-pressure compensation, and Mach/alpha aerodynamic drag curves with provenance and interpolation limits.
+- [x] Implement translational and rigid-body rotational dynamics with documented force, moment, inertia, and center-of-mass conventions.
+- [x] Build `solve_ivp` propagation with terminal events for engine cutoff, stage separation, and ground impact; apply transitions and restart without timestep-triggered approximations.
+- [x] Audit: pytest coverage, Tsiolkovsky delta-V, US76 reference tables, gravity/frame checks, event accuracy, and tolerance convergence; profile/vectorize appropriate bottlenecks, document evidence, and commit a clean milestone.
 
 ## Phase 2: Guidance, Navigation & Control
 
