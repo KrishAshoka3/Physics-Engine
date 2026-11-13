@@ -24,18 +24,24 @@ class AeroConfig:
         Subsonic drag, added transonic peak, and axial hypersonic drag limit.
     lift_slope_per_rad : float
         Small-angle lift slope [1/rad].
+    cd_multiplier : float
+        Positive dimensionless multiplier on the complete drag curve, including
+        incidence drag; lift is unchanged. Defaults to unity.
     """
 
     base_cd: float = .25
     wave_cd: float = .45
     hypersonic_cd: float = .15
     lift_slope_per_rad: float = 2.0
+    cd_multiplier: float = 1.
 
     def __post_init__(self) -> None:
         """Reject nonfinite or negative dimensionless aerodynamic parameters."""
         values = (self.base_cd, self.wave_cd, self.hypersonic_cd, self.lift_slope_per_rad)
         if not np.all(np.isfinite(values)) or min(values) < 0.:
             raise ValueError("Aerodynamic coefficients must be finite and nonnegative")
+        if not np.isfinite(self.cd_multiplier) or self.cd_multiplier <= 0.:
+            raise ValueError("Drag multiplier must be finite and positive")
 
 
 def coefficients(mach: ArrayLike, alpha_rad: ArrayLike, config: AeroConfig = AeroConfig()) -> tuple[FloatArray, FloatArray]:
@@ -70,7 +76,7 @@ def coefficients(mach: ArrayLike, alpha_rad: ArrayLike, config: AeroConfig = Aer
     cd_axial = (1. - hypersonic_weight) * config.base_cd + hypersonic_weight * config.hypersonic_cd
     lift_slope = ((1. - hypersonic_weight) * config.lift_slope_per_rad
                   + 2. * hypersonic_weight * np.abs(np.sin(alpha_rad)))
-    cd = cd_axial + config.wave_cd * wave_onset * wave_decay + 2. * np.sin(alpha_rad)**2
+    cd = config.cd_multiplier * (cd_axial + config.wave_cd * wave_onset * wave_decay + 2. * np.sin(alpha_rad)**2)
     cl = lift_slope * np.sin(alpha_rad) * np.cos(alpha_rad)
     return np.asarray(cd), np.asarray(cl)
 

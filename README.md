@@ -3,7 +3,9 @@
 Phase 1 provides atmospheric, aerodynamic, propulsion, vehicle, gravity/frame,
 and event-driven 3DoF/6DoF simulation modules. Phase 2 adds rail/pitch/gravity-turn
 guidance, orbital linear-tangent steering, and PID/LQR TVC with physical gimbal
-travel and rate limits. Analysis tooling and the UI remain future phases.
+travel and rate limits. Phase 3 adds reproducible parallel launch dispersions,
+covariance ellipses, regression/Sobol sensitivity, and constrained fuel-split,
+pitch, and payload optimization. Reporting and the UI remain future phases.
 
 From PowerShell in the repository root:
 
@@ -12,6 +14,7 @@ From PowerShell in the repository root:
 .\.venv\Scripts\python.exe -m pytest -q
 .\.venv\Scripts\python.exe -m tests.benchmark_physics
 .\.venv\Scripts\python.exe -m tests.benchmark_guidance
+.\.venv\Scripts\python.exe -m tests.benchmark_analysis
 ```
 
 ```python
@@ -27,6 +30,8 @@ result = simulate(
 ```
 
 See [physics models](docs/physics_models.md), [guidance usage](docs/guidance_models.md),
-[Phase 1 evidence](docs/phase1_audit.md), [Phase 2 evidence](docs/phase2_audit.md), and [roadmap](ROADMAP.md).
+[analysis usage and assumptions](docs/analysis_models.md),
+[Phase 1 evidence](docs/phase1_audit.md), [Phase 2 evidence](docs/phase2_audit.md),
+[Phase 3 evidence](docs/phase3_audit.md), and [roadmap](ROADMAP.md).
 Presets and upper-atmosphere/aerodynamic surrogates are engineering estimates;
 analytical verification does not establish flight-data validation.

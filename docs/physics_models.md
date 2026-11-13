@@ -1,5 +1,12 @@
 # Phase 1 core physics: conventions, models, and limits
 
+Phase 3 additions preserve these model defaults: `AeroConfig.cd_multiplier`
+scales the complete Cd curve without changing Cl; event records now retain
+left-side Q/axial-G/thrust for peak-load analysis. During root bracketing only,
+the propagator holds environmental values at the -5000 m domain boundary for
+trial states below it. No trajectory state or impact residual is clipped, and
+the public atmosphere API still rejects heights below its validity domain.
+
 This implementation supplies reusable numerical kernels and a hybrid event-driven propagator. It is analytically verified within the cases in `tests/`; it is not a flight-qualified or empirically validated vehicle model. Phase 2 guidance and TVC are available through the optional `guidance` argument; see [guidance models and usage](guidance_models.md) for the 17-state guided 6DoF schema and provisional preset nozzle offsets.
 
 ## Usage

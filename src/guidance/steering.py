@@ -64,8 +64,9 @@ class SteeringConfig:
     Parameters
     ----------
     rail_length_m, rail_azimuth_rad, rail_elevation_rad : float
-        Rail length [m], azimuth east of north [rad], elevation [rad]. Zero
-        length disables the rail for an airborne initialization.
+        Rail length [m], azimuth east of north [rad], elevation [rad] in (0,pi).
+        Elevations just above pi/2 represent tilt errors through vertical while
+        retaining the pitch-program azimuth. Zero length disables the rail.
     vertical_hold_s, pitch_duration_s, pitch_kick_rad : float
         Hold after rail exit [s], kick duration [s], and downward pitch change [rad].
     pitch_profile : {"linear", "exponential"}
@@ -99,7 +100,7 @@ class SteeringConfig:
                   self.vertical_hold_s, self.pitch_duration_s, self.pitch_kick_rad, self.guidance_period_s, self.terminal_guidance_s)
         if not np.all(np.isfinite(values)) or min(self.rail_length_m, self.vertical_hold_s, self.pitch_kick_rad) < 0.:
             raise ValueError("Rail, hold, and pitch kick must be finite and nonnegative")
-        if min(self.pitch_duration_s, self.guidance_period_s, self.terminal_guidance_s) <= 0. or not 0. < self.rail_elevation_rad <= np.pi/2.:
+        if min(self.pitch_duration_s, self.guidance_period_s, self.terminal_guidance_s) <= 0. or not 0. < self.rail_elevation_rad < np.pi:
             raise ValueError("Require positive durations and an upward rail")
         if self.pitch_kick_rad >= self.rail_elevation_rad or self.pitch_profile not in ("linear", "exponential"):
             raise ValueError("Pitch kick must end above the horizon and use a supported profile")

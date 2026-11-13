@@ -144,6 +144,8 @@ class EventRecord:
     Position, velocity, attitude, and rate remain continuous (no separation
     impulse). Mass and active-stage fuel may jump. ``trigger`` identifies the
     root function, e.g. depletion versus scheduled cutoff.
+    ``telemetry_before`` retains pre-transition Q [Pa], axial G [g0], and
+    thrust [N] so right-continuous rows do not hide burnout load peaks.
     """
 
     name: str
@@ -152,6 +154,7 @@ class EventRecord:
     stage_index: int
     state_before: FloatArray
     state_after: FloatArray
+    telemetry_before: dict[str, float] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -261,7 +264,10 @@ class _Dynamics:
         local_basis = enu_basis(float(latitude_rad), float(longitude_rad))
         wind_m_s = local_basis @ self.config.wind.velocity(float(altitude_m))
         stage = self.vehicle.stages[mode.stage_index]
-        pressure_pa = float(atmosphere(float(altitude_m)).pressure_pa) if self.config.atmosphere_enabled else 0.
+        # Trial stages can cross the terminal ground surface before root finding.
+        # Extend environment values below their domain only for these discarded
+        # trial states; trajectory state and impact residual are never clipped.
+        pressure_pa = float(atmosphere(max(float(altitude_m), -5000.)).pressure_pa) if self.config.atmosphere_enabled else 0.
         engine = propulsion(stage, time_s-mode.ignition_s, pressure_pa, engine_on=mode.phase == "powered")
         return NavigationState(time_s, ecef_to_eci @ position_m,
                                ecef_to_eci @ (velocity_m_s+np.cross(self.omega_rad_s, position_m)),
@@ -314,7 +320,7 @@ class _Dynamics:
             if axis.shape != (3,) or not np.all(np.isfinite(axis)) or not np.isclose(np.linalg.norm(axis), 1., atol=1e-8):
                 raise ValueError("3DoF direction callback must return a finite unit vector in the propagation frame")
             body_to_frame = np.eye(3)  # unused rotation in 3DoF
-        atmosphere_state = atmosphere(float(altitude_m))
+        atmosphere_state = atmosphere(max(float(altitude_m), -5000.))
         pressure_pa = float(atmosphere_state.pressure_pa) if self.config.atmosphere_enabled else 0.
         density_kg_m3 = float(atmosphere_state.density_kg_m3) if self.config.atmosphere_enabled else 0.
         wind_ecef_m_s = local_basis @ self.config.wind.velocity(float(altitude_m))
@@ -665,9 +671,13 @@ def simulate(vehicle: VehicleConfig, config: SimulationConfig = SimulationConfig
             break
         trigger = events[triggered[0]].name
         before, previous_stage = state.copy(), mode.stage_index
+        # The public time series is right-continuous. Retain left-side loads
+        # so a burnout thrust/G peak is not lost when its shared row becomes coast.
+        event_loads = dynamics.loads(time_s, before, mode) if trigger != "flight_update" else None
         name, state, mode, fairing_attached = _transition(trigger, time_s, state, mode, vehicle, fairing_attached)
         if trigger != "flight_update":
-            records.append(EventRecord(name, trigger, time_s, previous_stage, before, state.copy()))
+            records.append(EventRecord(name, trigger, time_s, previous_stage, before, state.copy(),
+                                       {"q_pa": event_loads.q_pa, "axial_g": event_loads.axial_g, "thrust_n": event_loads.thrust_n}))
         states[-1], modes[-1] = state.copy(), mode
         if trigger == "ground_impact":
             termination = "ground_impact"

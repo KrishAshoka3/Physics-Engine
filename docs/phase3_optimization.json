@@ -1,0 +1,804 @@
+{
+  "candidate": {
+    "design": {
+      "stage1_propellant_fraction": 0.49463792450948596,
+      "pitch_kick_rad": 0.08635011622829605,
+      "payload_mass_kg": 650.0
+    },
+    "objective_value": 222248.2743006788,
+    "metrics": {
+      "apogee_altitude_m": 222248.2743006788,
+      "peak_altitude_m": 222248.2743006788,
+      "max_q_pa": 2028726.8415612965,
+      "max_abs_axial_g": 11.753544966296028,
+      "downrange_impact_m": 24444.436452334558,
+      "crossrange_impact_m": -6.896229162093163e-13,
+      "impact_time_s": 459.95766246710815,
+      "insertion_radius_error_m": null,
+      "insertion_radial_error_m_s": null,
+      "insertion_speed_error_m_s": null,
+      "insertion_achieved": false
+    },
+    "constraint_margins": [
+      0.028955714218851125,
+      0.004579576513764838,
+      1.0
+    ],
+    "feasible": true,
+    "error": null
+  },
+  "baseline": {
+    "design": {
+      "stage1_propellant_fraction": 0.4298642533936652,
+      "pitch_kick_rad": 0.08726646259971647,
+      "payload_mass_kg": 650.0
+    },
+    "objective_value": 215508.7465178005,
+    "metrics": {
+      "apogee_altitude_m": 215508.7465178005,
+      "peak_altitude_m": 215508.7465178005,
+      "max_q_pa": 1989751.4057706026,
+      "max_abs_axial_g": 11.245351183617384,
+      "downrange_impact_m": 26419.144211620307,
+      "crossrange_impact_m": -6.791550618945546e-13,
+      "impact_time_s": 454.5958288818499,
+      "insertion_radius_error_m": null,
+      "insertion_radial_error_m_s": null,
+      "insertion_speed_error_m_s": null,
+      "insertion_achieved": false
+    },
+    "constraint_margins": [
+      0.047611194806497226,
+      0.0476190570975078,
+      1.0
+    ],
+    "feasible": true,
+    "error": null
+  },
+  "improved": true,
+  "optimizer_converged": false,
+  "message": "Iteration limit reached",
+  "evaluations": [
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.4298642533936652,
+        "pitch_kick_rad": 0.08726646259971647,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 215508.69402075288,
+      "metrics": {
+        "apogee_altitude_m": 215508.69402075288,
+        "peak_altitude_m": 215508.69402075288,
+        "max_q_pa": 1989734.9995038277,
+        "max_abs_axial_g": 11.245351295535428,
+        "downrange_impact_m": 26419.144286158033,
+        "crossrange_impact_m": -6.791548573568296e-13,
+        "impact_time_s": 454.5958099345208,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.04761904761904767,
+        0.04761904761904767,
+        1.0
+      ],
+      "feasible": true,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.43021425339366515,
+        "pitch_kick_rad": 0.08726646259971647,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 215548.36219568487,
+      "metrics": {
+        "apogee_altitude_m": 215548.36219568487,
+        "peak_altitude_m": 215548.36219568487,
+        "max_q_pa": 1989965.8190918115,
+        "max_abs_axial_g": 11.247888962050704,
+        "downrange_impact_m": 26400.407338921246,
+        "crossrange_impact_m": -6.79220572328023e-13,
+        "impact_time_s": 454.62819160852564,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.04750856648508406,
+        0.04740412989979392,
+        1.0
+      ],
+      "feasible": true,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.4298642533936652,
+        "pitch_kick_rad": 0.08740608893987602,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 215507.2796700684,
+      "metrics": {
+        "apogee_altitude_m": 215507.2796700684,
+        "peak_altitude_m": 215507.2796700684,
+        "max_q_pa": 1989728.5080821647,
+        "max_abs_axial_g": 11.245351315313941,
+        "downrange_impact_m": 26478.649265481065,
+        "crossrange_impact_m": -6.791729602759541e-13,
+        "impact_time_s": 454.59485644597754,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.04762215471941389,
+        0.04761904594398403,
+        1.0
+      ],
+      "feasible": true,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.49428792450948594,
+        "pitch_kick_rad": 0.08635011622829605,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222216.13381261408,
+      "metrics": {
+        "apogee_altitude_m": 222216.13381261408,
+        "peak_altitude_m": 222216.13381261408,
+        "max_q_pa": 2028539.1911400217,
+        "max_abs_axial_g": 11.75060798811608,
+        "downrange_impact_m": 24443.617041017995,
+        "crossrange_impact_m": -6.895781999790484e-13,
+        "impact_time_s": 459.9331001074047,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.029045532554947573,
+        0.0048283123693757535,
+        1.0
+      ],
+      "feasible": true,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.49463792450948596,
+        "pitch_kick_rad": 0.08635011622829605,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222248.34047494666,
+      "metrics": {
+        "apogee_altitude_m": 222248.34047494666,
+        "peak_altitude_m": 222248.34047494666,
+        "max_q_pa": 2028718.3835688594,
+        "max_abs_axial_g": 11.753545036873128,
+        "downrange_impact_m": 24444.444920022066,
+        "crossrange_impact_m": -6.896232234604806e-13,
+        "impact_time_s": 459.95775140753847,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.02895976261267963,
+        0.004579570536513922,
+        1.0
+      ],
+      "feasible": true,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.49428792450948594,
+        "pitch_kick_rad": 0.08648974256845561,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222214.75417590197,
+      "metrics": {
+        "apogee_altitude_m": 222214.75417590197,
+        "peak_altitude_m": 222214.75417590197,
+        "max_q_pa": 2028528.5661674987,
+        "max_abs_axial_g": 11.75060855097365,
+        "downrange_impact_m": 24500.87915839714,
+        "crossrange_impact_m": -6.895955116650764e-13,
+        "impact_time_s": 459.9321830205921,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.02905061816758092,
+        0.004828264700359908,
+        1.0
+      ],
+      "feasible": true,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5010822293319703,
+        "pitch_kick_rad": 0.08535836934507644,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222840.6796176497,
+      "metrics": {
+        "apogee_altitude_m": 222840.6796176497,
+        "peak_altitude_m": 222840.6796176497,
+        "max_q_pa": 2031607.122066853,
+        "max_abs_axial_g": 11.807959516492254,
+        "downrange_impact_m": 24067.715687722786,
+        "crossrange_impact_m": -6.902947404971866e-13,
+        "impact_time_s": 460.4080150083928,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.027577076213443186,
+        -2.8850539984803802e-05,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5014322293319703,
+        "pitch_kick_rad": 0.08535836934507644,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222871.75903661628,
+      "metrics": {
+        "apogee_altitude_m": 222871.75903661628,
+        "peak_altitude_m": 222871.75903661628,
+        "max_q_pa": 2031743.5034206894,
+        "max_abs_axial_g": 11.810933486642577,
+        "downrange_impact_m": 24070.150798641935,
+        "crossrange_impact_m": -6.903360579549611e-13,
+        "impact_time_s": 460.43155595552696,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.027511797669473204,
+        -0.0002807192855385221,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5010822293319703,
+        "pitch_kick_rad": 0.08549799568523599,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222839.3136408693,
+      "metrics": {
+        "apogee_altitude_m": 222839.3136408693,
+        "peak_altitude_m": 222839.3136408693,
+        "max_q_pa": 2031599.6453441558,
+        "max_abs_axial_g": 11.807960146926199,
+        "downrange_impact_m": 24125.06008797423,
+        "crossrange_impact_m": -6.903121346293072e-13,
+        "impact_time_s": 460.40710920059166,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.027580654925324355,
+        -2.8903932116852715e-05,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5010428679355574,
+        "pitch_kick_rad": 0.08398518620340492,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222850.45086530028,
+      "metrics": {
+        "apogee_altitude_m": 222850.45086530028,
+        "peak_altitude_m": 222850.45086530028,
+        "max_q_pa": 2031664.7065821188,
+        "max_abs_axial_g": 11.80761903828133,
+        "downrange_impact_m": 23503.440932841728,
+        "crossrange_impact_m": -6.901183077240768e-13,
+        "impact_time_s": 460.4141081554741,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.027549513550322313,
+        -1.5072397996362952e-08,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5013928679355574,
+        "pitch_kick_rad": 0.08398518620340492,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222881.5414090234,
+      "metrics": {
+        "apogee_altitude_m": 222881.5414090234,
+        "peak_altitude_m": 222881.5414090234,
+        "max_q_pa": 2031801.3955317491,
+        "max_abs_axial_g": 11.810592760271001,
+        "downrange_impact_m": 23505.815590106846,
+        "crossrange_impact_m": -6.901596496024279e-13,
+        "impact_time_s": 460.43765971498823,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.02748408777650757,
+        -0.0002518628009580137,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5010428679355574,
+        "pitch_kick_rad": 0.08412481254356446,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222849.11508583673,
+      "metrics": {
+        "apogee_altitude_m": 222849.11508583673,
+        "peak_altitude_m": 222849.11508583673,
+        "max_q_pa": 2031657.348220424,
+        "max_abs_axial_g": 11.807619658005352,
+        "downrange_impact_m": 23560.793338873886,
+        "crossrange_impact_m": -6.901358324917222e-13,
+        "impact_time_s": 460.4132325815237,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.02755303560904898,
+        -6.755749493159158e-08,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5010463688140987,
+        "pitch_kick_rad": 0.07724349079191555,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222911.60964395668,
+      "metrics": {
+        "apogee_altitude_m": 222911.60964395668,
+        "peak_altitude_m": 222911.60964395668,
+        "max_q_pa": 2032008.8739514102,
+        "max_abs_axial_g": 11.807620092026665,
+        "downrange_impact_m": 20733.29143704969,
+        "crossrange_impact_m": -6.892567707260177e-13,
+        "impact_time_s": 460.45296554169795,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.027384778825835898,
+        -1.0431522912135449e-07,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5013963688140988,
+        "pitch_kick_rad": 0.07724349079191555,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222942.72053860445,
+      "metrics": {
+        "apogee_altitude_m": 222942.72053860445,
+        "peak_altitude_m": 222942.72053860445,
+        "max_q_pa": 2032146.914365584,
+        "max_abs_axial_g": 11.810593665994297,
+        "downrange_impact_m": 20735.415265098505,
+        "crossrange_impact_m": -6.89298118055465e-13,
+        "impact_time_s": 460.47653436949076,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.027318706177392404,
+        -0.00025193950764257345,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5010463688140987,
+        "pitch_kick_rad": 0.0773831171320751,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 222910.42198430735,
+      "metrics": {
+        "apogee_altitude_m": 222910.42198430735,
+        "peak_altitude_m": 222910.42198430735,
+        "max_q_pa": 2032002.0327660241,
+        "max_abs_axial_g": 11.807620661394282,
+        "downrange_impact_m": 20790.682561302303,
+        "crossrange_impact_m": -6.892749360315591e-13,
+        "impact_time_s": 460.4522382523602,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.027388053339605367,
+        -1.5253558771632925e-07,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5010606111180091,
+        "pitch_kick_rad": 0.047268157540158756,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 223096.66705701037,
+      "metrics": {
+        "apogee_altitude_m": 223096.66705701037,
+        "peak_altitude_m": 223096.66705701037,
+        "max_q_pa": 2033221.919414758,
+        "max_abs_axial_g": 11.80764271917289,
+        "downrange_impact_m": 8399.449850253417,
+        "crossrange_impact_m": -6.850528510705734e-13,
+        "impact_time_s": 460.53885133266454,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.026804158092948005,
+        -2.0206326925009677e-06,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5014106111180091,
+        "pitch_kick_rad": 0.047268157540158756,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 223127.846065832,
+      "metrics": {
+        "apogee_altitude_m": 223127.846065832,
+        "peak_altitude_m": 223127.846065832,
+        "max_q_pa": 2033381.8408005137,
+        "max_abs_axial_g": 11.810615806014964,
+        "downrange_impact_m": 8400.470310581406,
+        "crossrange_impact_m": -6.850941354039182e-13,
+        "impact_time_s": 460.5624363669574,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.026727612180195814,
+        -0.00025381456991602214,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    },
+    {
+      "design": {
+        "stage1_propellant_fraction": 0.5010606111180091,
+        "pitch_kick_rad": 0.047407783880318306,
+        "payload_mass_kg": 650.0
+      },
+      "objective_value": 223096.13987506062,
+      "metrics": {
+        "apogee_altitude_m": 223096.13987506062,
+        "peak_altitude_m": 223096.13987506062,
+        "max_q_pa": 2033217.5458419574,
+        "max_abs_axial_g": 11.807643067658196,
+        "downrange_impact_m": 8456.942779876488,
+        "crossrange_impact_m": -6.850738472355659e-13,
+        "impact_time_s": 460.53878445413847,
+        "insertion_radius_error_m": null,
+        "insertion_radial_error_m_s": null,
+        "insertion_speed_error_m_s": null,
+        "insertion_achieved": false
+      },
+      "constraint_margins": [
+        0.026806251491028776,
+        -2.050146289622745e-06,
+        1.0
+      ],
+      "feasible": false,
+      "error": null
+    }
+  ],
+  "configuration": {
+    "vehicle": {
+      "name": "Two-Stage Sounding Rocket (Black Brant IX Class)",
+      "stages": [
+        {
+          "name": "Terrier-class booster",
+          "dry_mass_kg": 350.0,
+          "propellant_mass_kg": 760.0,
+          "isp_vac_s": 240.0,
+          "nozzle_exit_area_m2": 0.035,
+          "mass_flow_kg_s": 126.66666666666667,
+          "thrust_curve_time_s": [],
+          "thrust_curve_vac_n": [],
+          "cutoff_time_s": null,
+          "separation_delay_s": 0.0,
+          "coast_after_separation_s": 6.0,
+          "reference_area_m2": 0.164,
+          "stack_length_m": 13.0,
+          "stack_radius_m": 0.229,
+          "inertia_per_mass_m2": null,
+          "cp_offset_body_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "thrust_offset_body_m": [
+            -5.2,
+            0.0,
+            0.0
+          ],
+          "angular_damping_n_m_s": 0.0,
+          "aero": {
+            "base_cd": 0.25,
+            "wave_cd": 0.45,
+            "hypersonic_cd": 0.15,
+            "lift_slope_per_rad": 2.0,
+            "cd_multiplier": 1.0
+          }
+        },
+        {
+          "name": "Black Brant-class sustainer",
+          "dry_mass_kg": 500.0,
+          "propellant_mass_kg": 1008.0,
+          "isp_vac_s": 290.0,
+          "nozzle_exit_area_m2": 0.035,
+          "mass_flow_kg_s": 36.654545454545456,
+          "thrust_curve_time_s": [],
+          "thrust_curve_vac_n": [],
+          "cutoff_time_s": null,
+          "separation_delay_s": 0.0,
+          "coast_after_separation_s": 0.0,
+          "reference_area_m2": 0.151,
+          "stack_length_m": 8.7,
+          "stack_radius_m": 0.219,
+          "inertia_per_mass_m2": null,
+          "cp_offset_body_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "thrust_offset_body_m": [
+            -3.48,
+            0.0,
+            0.0
+          ],
+          "angular_damping_n_m_s": 0.0,
+          "aero": {
+            "base_cd": 0.25,
+            "wave_cd": 0.45,
+            "hypersonic_cd": 0.15,
+            "lift_slope_per_rad": 2.0,
+            "cd_multiplier": 1.0
+          }
+        }
+      ],
+      "payload_mass_kg": 650.0,
+      "fairing_mass_kg": 40.0,
+      "fairing_jettison_time_s": null,
+      "fairing_jettison_altitude_m": null,
+      "description": "Heavy-payload ~200 km sounding class. Upper dry mass includes ~226 kg assumed recovery/structure beyond motor; see model notes."
+    },
+    "simulation": {
+      "duration_s": 650.0,
+      "max_step_s": 4.0,
+      "frame": "ECI",
+      "dof": 3,
+      "method": "DOP853",
+      "rotating_earth": true,
+      "atmosphere_enabled": true,
+      "j2_enabled": true,
+      "engines_enabled": true,
+      "latitude_rad": 0.0,
+      "longitude_rad": 0.0,
+      "launch_altitude_m": 0.0,
+      "initial_velocity_enu_m_s": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "initial_azimuth_rad": 1.5707963267948966,
+      "initial_elevation_rad": 1.5707963267948966,
+      "initial_body_rate_rad_s": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ground_altitude_m": 0.0,
+      "mu_m3_s2": 398600441800000.0,
+      "rtol": 1e-07,
+      "position_atol_m": 0.0001,
+      "velocity_atol_m_s": 1e-06,
+      "mass_atol_kg": 1e-07,
+      "quaternion_atol": 1e-11,
+      "rate_atol_rad_s": 1e-10,
+      "wind": {
+        "altitude_m": [
+          0.0
+        ],
+        "velocity_enu_m_s": [
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      }
+    },
+    "guidance": {
+      "steering": {
+        "rail_length_m": 15.0,
+        "rail_azimuth_rad": 1.5707963267948966,
+        "rail_elevation_rad": 1.5707963267948966,
+        "vertical_hold_s": 5.0,
+        "pitch_duration_s": 10.0,
+        "pitch_kick_rad": 0.08726646259971647,
+        "pitch_profile": "exponential",
+        "guidance_period_s": 5.0,
+        "terminal_guidance_s": 5.0,
+        "orbital_stage_index": 1,
+        "target": null
+      },
+      "autopilot": {
+        "mode": "PID",
+        "update_period_s": 0.1,
+        "actuator_time_constant_s": 0.08,
+        "command_rate_filter_s": 0.5,
+        "gimbal_limit_rad": 0.08726646259971647,
+        "gimbal_rate_limit_rad_s": 0.3490658503988659,
+        "natural_frequency_rad_s": 1.2,
+        "damping_ratio": 0.9,
+        "integral_gain_per_s3": 0.08,
+        "integral_limit_rad_s": 0.2,
+        "lqr_angle_weight": 2.0736,
+        "lqr_rate_weight": 1.7856,
+        "lqr_effort_weight": 1.0
+      }
+    },
+    "optimization": {
+      "objective": "apogee",
+      "method": "SLSQP",
+      "stage1_fraction_bounds": [
+        0.3,
+        0.65
+      ],
+      "pitch_kick_bounds_rad": [
+        0.0,
+        0.13962634015954636
+      ],
+      "payload_bounds_kg": [
+        0.0,
+        1000.0
+      ],
+      "max_q_pa": 2089221.749479019,
+      "max_axial_g": 11.8076188603122,
+      "scale_dry_mass": true,
+      "max_iterations": 5,
+      "population_size": 5,
+      "max_evaluations": 30,
+      "seed": 0
+    },
+    "verification_simulation": {
+      "duration_s": 650.0,
+      "max_step_s": 2.0,
+      "frame": "ECI",
+      "dof": 3,
+      "method": "DOP853",
+      "rotating_earth": true,
+      "atmosphere_enabled": true,
+      "j2_enabled": true,
+      "engines_enabled": true,
+      "latitude_rad": 0.0,
+      "longitude_rad": 0.0,
+      "launch_altitude_m": 0.0,
+      "initial_velocity_enu_m_s": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "initial_azimuth_rad": 1.5707963267948966,
+      "initial_elevation_rad": 1.5707963267948966,
+      "initial_body_rate_rad_s": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ground_altitude_m": 0.0,
+      "mu_m3_s2": 398600441800000.0,
+      "rtol": 1e-09,
+      "position_atol_m": 0.0001,
+      "velocity_atol_m_s": 1e-06,
+      "mass_atol_kg": 1e-07,
+      "quaternion_atol": 1e-11,
+      "rate_atol_rad_s": 1e-10,
+      "wind": {
+        "altitude_m": [
+          0.0
+        ],
+        "velocity_enu_m_s": [
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      }
+    }
+  },
+  "metadata": {
+    "python": "3.12.14",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "git_revision": "aae97798dc925fe6c28e668548066923ab1033a7",
+    "git_dirty": true,
+    "search_evaluations": 18,
+    "seed": 0,
+    "objective_unit": "m"
+  }
+}

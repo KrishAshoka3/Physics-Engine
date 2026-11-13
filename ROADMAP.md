@@ -1,6 +1,6 @@
 # Aerospace Trajectory, Guidance & Mission Analysis Suite
 
-Phase 1 core modules are implemented and analytically verified; see `docs/phase1_audit.md` and `docs/physics_models.md` for evidence and model limits. Phase 2 guidance and TVC are implemented; see `docs/phase2_audit.md`. Phases 3-5 remain unimplemented. Checkboxes indicate implementation within documented assumptions, not flight-data validation or research readiness. Execute only authorized phases and satisfy the `AGENTS.md` audit gate before proceeding.
+Phase 1 core modules are implemented and analytically verified; see `docs/phase1_audit.md` and `docs/physics_models.md` for evidence and model limits. Phase 2 guidance and TVC are implemented; see `docs/phase2_audit.md`. Phase 3 analysis is implemented and verified; see `docs/phase3_audit.md`. Phases 4-5 remain unimplemented. Checkboxes indicate implementation within documented assumptions, not flight-data validation or research readiness. Execute only authorized phases and satisfy the `AGENTS.md` audit gate before proceeding.
 
 ## Phase 1: High-Fidelity 3DoF/6DoF Physics & Environment
 
@@ -28,12 +28,14 @@ Phase 1 core modules are implemented and analytically verified; see `docs/phase1
 
 ## Phase 3: Parallelized Monte Carlo, Sensitivity & Optimization
 
-- [ ] Define uncertainty distributions, correlations, output metrics, and deterministic per-run random seeds.
-- [ ] Implement `ProcessPoolExecutor` dispersion runs with Windows-safe entry points, reproducible worker behavior, and explicit failed-run reporting.
-- [ ] Plot 1/2/3-sigma covariance ellipses with declared projection, scaling, and sample size; distinguish sigma radii from joint confidence probabilities.
-- [ ] Implement Sobol sensitivity analysis with sampling design, convergence checks, and uncertainty estimates; document any additional dependency before introducing it.
-- [ ] Implement `scipy.optimize` staging and pitch optimization with bounds, constraints, scaling, feasibility checks, and reproducible baselines.
-- [ ] Audit: pytest serial/parallel reproducibility, synthetic covariance and known sensitivity benchmarks, optimizer feasibility and improvement; profile/vectorize bottlenecks, record evidence, and commit a clean milestone.
+**Complete within documented assumptions:** 23-parameter seeded dispersion, spawned workers, covariance contours, regression and true Sobol first/total indices, and constrained sizing. The full suite passes 145 tests. Audit workloads include 100 class-preset launches and 1000 short fixture launches; the verified sizing improvement is feasible but stopped at its iteration limit. See `docs/phase3_audit.md`.
+
+- [x] Define uncertainty distributions, correlations, output metrics, and deterministic per-run random seeds.
+- [x] Implement `ProcessPoolExecutor` dispersion runs with Windows-safe entry points, reproducible worker behavior, and explicit failed-run reporting.
+- [x] Plot 1/2/3-sigma covariance ellipses with declared projection, scaling, and sample size; distinguish sigma radii from joint confidence probabilities.
+- [x] Implement Sobol sensitivity analysis with sampling design, convergence checks, and uncertainty estimates; document any additional dependency before introducing it.
+- [x] Implement `scipy.optimize` staging and pitch optimization with bounds, constraints, scaling, feasibility checks, and reproducible baselines.
+- [x] Audit: pytest serial/parallel reproducibility, synthetic covariance and known sensitivity benchmarks, optimizer feasibility and improvement; profile/vectorize bottlenecks, record evidence, and commit a clean milestone.
 
 ## Phase 4: Verification & Validation Suite & PDF Technical Report
 
