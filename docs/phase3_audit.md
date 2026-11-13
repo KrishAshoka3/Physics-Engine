@@ -8,6 +8,24 @@ recorded benchmark metadata identifies the base revision plus a dirty tree.
 
 ## Verification commands and acceptance
 
+Completion follow-up: `tests/test_analysis.py` adds six consolidated acceptance
+cases. The full suite now passes **151 tests in 130.79 s**. Identical root seeds
+reproduce all inputs, run seeds, statuses, SI metrics, and ellipse vertices
+across two parallel runs and a serial run. Stored child seeds are independently
+replayed with `np.random.Generator`. Covariance is checked for symmetry and
+positive semidefiniteness at ranks 0/1/2; both semiaxes and contour offsets scale
+1:2:3 within floating-point tolerances.
+
+The short physical fixture's SLSQP solve now explicitly runs to convergence
+(31 unique evaluations), improving verified apogee from about 75.0229 m to
+77.8575 m. A separate 0.1 s max-step, rtol=1e-10 simulation confirms improvement
+greater than 1 m, Q <=5000 Pa and absolute axial load <=5 g. A one-evaluation
+budget test requires nonconverged status. This establishes convergence for
+that bounded fixture, not a global optimum or convergence of the earlier
+full-size iteration-limited benchmark. No production-code fixes were needed;
+prior profiling evidence remains applicable. Compilation, dependency,
+annotation/docstring, and diff checks pass.
+
 Run with the repository `.venv` interpreter:
 
 ```powershell

@@ -28,7 +28,7 @@ Phase 1 core modules are implemented and analytically verified; see `docs/phase1
 
 ## Phase 3: Parallelized Monte Carlo, Sensitivity & Optimization
 
-**Complete within documented assumptions:** 23-parameter seeded dispersion, spawned workers, covariance contours, regression and true Sobol first/total indices, and constrained sizing. The full suite passes 145 tests. Audit workloads include 100 class-preset launches and 1000 short fixture launches; the verified sizing improvement is feasible but stopped at its iteration limit. See `docs/phase3_audit.md`.
+**Complete within documented assumptions:** 23-parameter seeded dispersion, spawned workers, covariance contours, regression and true Sobol first/total indices, and constrained sizing. Consolidated acceptance tests in `tests/test_analysis.py` additionally verify Generator replay across worker counts, PSD/sigma geometry, and actual SLSQP convergence with finer-resolution constraint checks. Audit workloads include 100 class-preset launches and 1000 short fixture launches; the verified sizing improvement is feasible but stopped at its iteration limit. See `docs/phase3_audit.md`.
 
 - [x] Define uncertainty distributions, correlations, output metrics, and deterministic per-run random seeds.
 - [x] Implement `ProcessPoolExecutor` dispersion runs with Windows-safe entry points, reproducible worker behavior, and explicit failed-run reporting.
