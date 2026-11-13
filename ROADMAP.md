@@ -39,6 +39,12 @@ Phase 1 core modules are implemented and analytically verified; see `docs/phase1
 
 ## Phase 4: Verification & Validation Suite & PDF Technical Report
 
+**In progress, paused at user request (2026-11-13):** executable analytical
+benchmarks, a qualified archived OpenRocket comparison, public mission schedule
+comparisons, and additional telemetry are committed as an intermediate milestone.
+See `docs/phase4_progress.md`. The PDF generator is only a documented stub;
+no engineering PDF has been generated or inspected. Completion remains unchecked.
+
 - [ ] Consolidate Tsiolkovsky, orbital-energy conservation under applicable conservative assumptions, and event/convergence regression tests.
 - [ ] Compare compatible cases against OpenRocket and published Falcon 9 benchmarks with cited sources, matched assumptions, uncertainty bounds, and clearly identified unavailable inputs.
 - [ ] Separate analytical verification, cross-tool comparison, and observational validation; define acceptance criteria and explain discrepancies without tuning to unsupported targets.
@@ -47,6 +53,10 @@ Phase 1 core modules are implemented and analytically verified; see `docs/phase1
 - [ ] Audit: pytest report data and numerical regressions, all applicable analytical benchmarks, report reproducibility, and measured performance; document unresolved limitations and commit a clean milestone.
 
 ## Phase 5: Mission Control Streamlit App & Playwright Demo Automation
+
+**Deferred at user request (2026-11-13):** shared mission configuration/export
+helpers and browser dependencies are prepared. The dashboard and demo capture
+have not been implemented. Resume UI work only when requested.
 
 - [ ] Build Streamlit mission configuration, trajectory visualization, guidance diagnostics, dispersion, optimization, and V&V report views using shared public APIs.
 - [ ] Show explicit units, model validity, progress, cancellation/error states, and reproducible exportable run configurations; use Plotly for interactive results.

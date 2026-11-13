@@ -25,3 +25,8 @@ htmlcov/
 
 # macOS metadata
 .DS_Store
+
+# Local report/browser intermediates and optional external reference tools
+tmp/
+.tools/
+.streamlit/secrets.toml

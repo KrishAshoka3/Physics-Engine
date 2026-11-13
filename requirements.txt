@@ -6,3 +6,7 @@ pandas
 pytest
 matplotlib
 reportlab
+playwright
+imageio
+imageio-ffmpeg
+pypdf

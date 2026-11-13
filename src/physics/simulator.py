@@ -236,6 +236,7 @@ class _Loads:
     thrust_n: float
     axial_g: float
     twr: float
+    drag_n: float
 
 
 class _Dynamics:
@@ -366,7 +367,9 @@ class _Dynamics:
         return _Loads(acceleration_m_s2, flow_kg_s, body_to_frame, torque_n_m, frame_rate_rad_s,
                       float(altitude_m), float(np.linalg.norm(relative_velocity_m_s)), mach, q_pa, alpha_rad,
                       thrust_n, float(np.dot(force_n, axis) / (state[6] * G0_M_S2)),
-                      thrust_n / (state[6] * gravity_m_s2) if gravity_m_s2 > 0. else np.nan)
+                      thrust_n / (state[6] * gravity_m_s2) if gravity_m_s2 > 0. else np.nan,
+                      float(-np.dot(aero_n, relative_velocity_m_s) / np.linalg.norm(relative_velocity_m_s))
+                      if np.linalg.norm(relative_velocity_m_s) > 0. else 0.)
 
     def rhs(self, time_s: float, state: FloatArray, mode: _Mode) -> FloatArray:
         """Return SI state derivatives for one smooth event-bounded segment."""
@@ -691,6 +694,18 @@ def simulate(vehicle: VehicleConfig, config: SimulationConfig = SimulationConfig
             raise RuntimeError("Unexpected repeated terminal event; refusing a zero-time restart loop")
     time_array_s, state_array = np.array(times_s), np.stack(states)
     telemetry = _telemetry(dynamics, time_array_s, state_array, modes, commands)
+    # Integrate sampled thrust acceleration using left limits at discontinuities.
+    # This diagnostic is trapezoidal quadrature, not net velocity or ideal delta-V.
+    acceleration_right_m_s2 = telemetry["thrust_n"] / state_array[:, 6]
+    acceleration_left_m_s2 = acceleration_right_m_s2.copy()
+    handled: set[int] = set()
+    for event in records:
+        index = int(np.argmin(np.abs(time_array_s-event.time_s)))
+        if index not in handled:
+            acceleration_left_m_s2[index] = event.telemetry_before["thrust_n"] / event.state_before[6]
+            handled.add(index)
+    telemetry["delta_v_expended_m_s"] = np.r_[0., np.cumsum(
+        .5*(acceleration_right_m_s2[:-1]+acceleration_left_m_s2[1:])*np.diff(time_array_s))]
     return SimulationResult(time_array_s, state_array, np.array([item.stage_index for item in modes], dtype=np.int64),
                             np.array([item.phase == "powered" for item in modes], dtype=bool), tuple(records),
                             telemetry, config, termination, function_evaluations,
@@ -712,7 +727,7 @@ def _telemetry(dynamics: _Dynamics, times_s: FloatArray, states: FloatArray, mod
             commanded_axis = command.direction_eci(navigation)
             commanded_axes.append(commanded_axis)
             attitude_errors_rad.append(float(np.arccos(np.clip(np.dot(navigation.body_to_eci[:, 0], commanded_axis), -1., 1.))) if dynamics.config.dof == 6 else 0.)
-    names = ("altitude_m", "relative_speed_m_s", "mach", "q_pa", "alpha_rad", "thrust_n", "axial_g", "twr")
+    names = ("altitude_m", "relative_speed_m_s", "mach", "q_pa", "alpha_rad", "thrust_n", "axial_g", "twr", "drag_n")
     telemetry = {name: np.array([getattr(row, name) for row in rows]) for name in names}
     if dynamics.config.frame == "ECI":
         position_eci_m, velocity_eci_m_s = states[:, :3], states[:, 3:6]
